@@ -12,14 +12,9 @@ public class BreedService {
     @Autowired
     private BreedRestClient breedRestClient;
 
-    public String getBreedList() {
-        log.info("entramos a la lista de breeds");
-        return breedRestClient.getBreedList();
-    }
-
-    public String getBreedDetail(String breed_name) {
-        log.info("entramos al detalle de [{}]", breed_name);
-        return breedRestClient.getBreedDetail(breed_name);
+    public String getBreedFull(String breedName) {
+        log.info("entramos a obtener datos de: [{}]", breedName);
+        return breedRestClient.getBreedFull(breedName);
     }
 }
 
