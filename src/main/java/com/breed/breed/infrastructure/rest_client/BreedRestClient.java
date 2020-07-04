@@ -16,8 +16,8 @@ import java.util.HashMap;
 @Component
 public class BreedRestClient {
 
-    private static final String URL_LIST = "https://dog.ceo/api/breeds/list/all";
-    private static final String URL_DETAIL = "https://dog.ceo/api/breed/{breed_name}/images";
+    private static final String URL_LIST = "http://localhost:8081/v1/dogceo/list/all";
+    private static final String URL_DETAIL = "http://localhost:8081/v1/dogceo/{breed_name}/images";
 
     @Autowired
     private RestTemplate restTemplate;
