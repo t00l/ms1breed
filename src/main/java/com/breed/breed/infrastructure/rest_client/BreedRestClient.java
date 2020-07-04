@@ -1,6 +1,7 @@
 package com.breed.breed.infrastructure.rest_client;
 
-import com.breed.breed.domain.Image;
+import com.breed.breed.domain.models.BreedDTO;
+import com.breed.breed.domain.models.ImageDTO;
 import com.breed.breed.domain.InvalidBreedException;
 import com.google.gson.Gson;
 import com.jayway.restassured.path.json.JsonPath;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @Slf4j
 @Component
@@ -26,21 +26,21 @@ public class BreedRestClient {
         return  "message" + "['" + breedName + "']";
     }
 
-    public ArrayList<Image> formSubBreedImages(ArrayList<String> response) {
-        ArrayList<Image> imagesResponse = new ArrayList<Image>();
+    public ArrayList<ImageDTO> formSubBreedImages(ArrayList<String> response) {
+        ArrayList<ImageDTO> imagesResponse = new ArrayList<ImageDTO>();
         response.stream().forEach(image -> {
-            Image objectImage = new Image();
+            ImageDTO objectImage = new ImageDTO();
             objectImage.setUrl(image);
             imagesResponse.add(objectImage);
         } );
         return imagesResponse;
     }
 
-    public ArrayList<Image> getBreedDetail(String breedName) {
+    public ArrayList<ImageDTO> getBreedDetail(String breedName) {
         try {
             String restResponse =  restTemplate.getForObject(URL_DETAIL, String.class, breedName);
             ArrayList<String> imagesFromResponse = JsonPath.from(restResponse).get("message[0..1]");
-            ArrayList<Image> response = formSubBreedImages(imagesFromResponse);
+            ArrayList<ImageDTO> response = formSubBreedImages(imagesFromResponse);
             log.info("Detalle obtenido de [{}]", breedName);
             return response;
         } catch (Exception e) {
@@ -64,15 +64,16 @@ public class BreedRestClient {
 
     public String formFullReturn(String breedName) {
         Gson gson = new Gson();
-        HashMap<String, Object> total = new HashMap<String, Object>();
+        BreedDTO breedDTO = new BreedDTO();
 
         String subBreed = getSubBreed(breedName);
-        ArrayList<Image> breedDetail = getBreedDetail(breedName);
+        ArrayList<ImageDTO> breedDetail = getBreedDetail(breedName);
 
-        total.put("breed:", breedName);
-        total.put("images", breedDetail);
-        total.put("subBreeds", subBreed);
-        String response = gson.toJson(total);
+        breedDTO.setBreed(breedName);
+        breedDTO.setSubBreeds(subBreed);
+        breedDTO.setImages(breedDetail);
+
+        String response = gson.toJson(breedDTO);
 
         return response;
     }
